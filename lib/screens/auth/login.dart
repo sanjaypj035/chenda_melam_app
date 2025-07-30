@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:local_auth/local_auth.dart';
 import '../../services/auth_service.dart';
 import 'forgot_password.dart';
 
@@ -16,15 +18,71 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _secureStorage = const FlutterSecureStorage();
+  final _localAuth = LocalAuthentication();
   bool _isLoading = false;
   bool _obscurePassword = true;
+  bool _showBiometricButton = false;
   String? _errorMessage;
+  bool _autoLoginAttempted = false;
 
   @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _checkBiometrics();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    try {
+      final email = await _secureStorage.read(key: 'email');
+      final password = await _secureStorage.read(key: 'password');
+      
+      if (email != null && password != null && mounted) {
+        setState(() {
+          _emailController.text = email;
+          _passwordController.text = password;
+        });
+        
+        if (!_autoLoginAttempted) {
+          _autoLoginAttempted = true;
+          _submit();
+        }
+      }
+    } catch (e) {
+      debugPrint('Error loading credentials: $e');
+    }
+  }
+
+  Future<void> _checkBiometrics() async {
+    try {
+      final canCheck = await _localAuth.canCheckBiometrics;
+      final isSupported = await _localAuth.isDeviceSupported();
+      if (mounted) {
+        setState(() {
+          _showBiometricButton = canCheck && isSupported;
+        });
+      }
+    } catch (e) {
+      debugPrint('Biometric check error: $e');
+    }
+  }
+
+  Future<void> _authenticateWithBiometrics() async {
+    try {
+      final authenticated = await _localAuth.authenticate(
+        localizedReason: 'Authenticate to login',
+        options: const AuthenticationOptions(biometricOnly: true),
+      );
+      
+      if (authenticated && mounted) {
+        _submit();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _errorMessage = 'Biometric authentication failed');
+      }
+    }
   }
 
   Future<void> _submit() async {
@@ -42,15 +100,38 @@ class _LoginPageState extends State<LoginPage> {
         _passwordController.text.trim(),
       );
       
+      await _secureStorage.write(
+        key: 'email',
+        value: _emailController.text.trim(),
+      );
+      await _secureStorage.write(
+        key: 'password',
+        value: _passwordController.text.trim(),
+      );
+
       if (mounted) {
         Navigator.pushNamedAndRemoveUntil(
-          context, 
-          '/home',
-          (route) => false,
-        );
+          context, '/home', (route) => false);
       }
     } on FirebaseAuthException catch (e) {
-      setState(() => _errorMessage = "Login failed. Please try again.");
+      String errorMessage;
+      switch (e.code) {
+        case 'invalid-email':
+          errorMessage = "Invalid email format.";
+          break;
+        case 'user-not-found':
+        case 'wrong-password':
+          errorMessage = "Incorrect email or password.";
+          break;
+        case 'user-disabled':
+          errorMessage = "Account disabled.";
+          break;
+        default:
+          errorMessage = "Login failed. Please try again.";
+      }
+      setState(() => _errorMessage = errorMessage);
+    } catch (e) {
+      setState(() => _errorMessage = "An unexpected error occurred.");
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -62,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/1000_F_505460427_4T2HjWM2IkMnpSwZaMEPXCKC4UVlsfW7.jpg'),
             fit: BoxFit.cover,
@@ -91,17 +172,15 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.music_note, size: 50, color: Colors.deepOrange),
-                      const SizedBox(height: 10),
                       const Text(
                         'CHENDA MELAM',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Colors.deepOrange,
+                          color: Colors.blue,
                         ),
                       ),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: 4),
                       const Text(
                         'Traditional Kerala Percussion',
                         style: TextStyle(
@@ -125,18 +204,22 @@ class _LoginPageState extends State<LoginPage> {
                         controller: _emailController,
                         decoration: InputDecoration(
                           labelText: 'Email',
-                          labelStyle: TextStyle(color: Colors.black),
-                          prefixIcon: const Icon(Icons.email, color: Colors.deepOrange),
+                          labelStyle: const TextStyle(color: Colors.black),
+                          prefixIcon: const Icon(Icons.email, color: Colors.blue),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.deepOrange),
+                            borderSide: const BorderSide(color: Colors.blue),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.deepOrange),
+                            borderSide: const BorderSide(color: Colors.blue),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Colors.blue, width: 2.0),
                           ),
                         ),
-                        style: TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
                         validator: (value) {
                           if (value == null || value.isEmpty) return 'Please enter email';
                           if (!value.contains('@')) return 'Enter valid email';
@@ -150,22 +233,26 @@ class _LoginPageState extends State<LoginPage> {
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
                           labelText: 'Password',
-                          labelStyle: TextStyle(color: Colors.black),
-                          prefixIcon: const Icon(Icons.lock, color: Colors.deepOrange),
+                          labelStyle: const TextStyle(color: Colors.black),
+                          prefixIcon: const Icon(Icons.lock, color: Colors.blue),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.deepOrange),
+                            borderSide: const BorderSide(color: Colors.blue),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.deepOrange),
+                            borderSide: const BorderSide(color: Colors.blue),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Colors.blue, width: 2.0),
                           ),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscurePassword 
                                   ? Icons.visibility_off 
                                   : Icons.visibility,
-                              color: Colors.deepOrange,
+                              color: Colors.blue,
                             ),
                             onPressed: () {
                               setState(() {
@@ -174,7 +261,7 @@ class _LoginPageState extends State<LoginPage> {
                             },
                           ),
                         ),
-                        style: TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
                         validator: (value) {
                           if (value == null || value.isEmpty) return 'Please enter password';
                           if (value.length < 6) return 'Password too short';
@@ -182,6 +269,15 @@ class _LoginPageState extends State<LoginPage> {
                         },
                       ),
                       const SizedBox(height: 10),
+
+                      if (_showBiometricButton)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: IconButton(
+                            icon: const Icon(Icons.fingerprint, size: 40, color: Colors.blue),
+                            onPressed: _authenticateWithBiometrics,
+                          ),
+                        ),
 
                       Align(
                         alignment: Alignment.centerRight,
@@ -192,7 +288,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: const Text(
                             'Forgot Password?',
                             style: TextStyle(
-                              color: Colors.deepOrange,
+                              color: Colors.blue,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -204,11 +300,12 @@ class _LoginPageState extends State<LoginPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepOrange,
+                            backgroundColor: Colors.blue,
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
+                            foregroundColor: Colors.white,
                           ),
                           onPressed: _isLoading ? null : _submit,
                           child: _isLoading
@@ -232,7 +329,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: const Text(
                           'Don\'t have an account? Sign Up',
                           style: TextStyle(
-                            color: Colors.deepOrange,
+                            color: Colors.blue,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
