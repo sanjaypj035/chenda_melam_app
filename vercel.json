@@ -2,8 +2,8 @@
   "version": 2,
   "builds": [
     {
-      "src": "pubspec.yaml",
-      "use": "@sanchitgoyal/vercel-flutter"
+      "src": "Dockerfile",
+      "use": "@vercel/docker"
     }
   ],
   "routes": [
