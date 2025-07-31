@@ -24,6 +24,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  vercel-flutter-plugin: ^0.1.0 # Add this line
 
 flutter:
   uses-material-design: true
@@ -31,4 +32,4 @@ flutter:
     - assets/images/ecstacy-of-thrissur-pooram-PT2T39.jpg
     - assets/images/1000_F_505460427_4T2HjWM2IkMnpSwZaMEPXCKC4UVlsfW7.jpg
     - assets/images/launch_bg.png
-    - assets/images/image1.png 
+    - assets/images/image1.png
