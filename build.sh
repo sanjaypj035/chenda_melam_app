@@ -14,7 +14,4 @@ export PATH="$PATH:$(pwd)/flutter/bin"
 flutter pub get
 
 # Build the web application with a relative base-href
-flutter build web --release --web-renderer canvaskit --base-href ./
-
-# Tell Vercel where the output is located
-cp -r build/web/* .
+flutter build web --release --web-renderer canvaskit --base-href /
