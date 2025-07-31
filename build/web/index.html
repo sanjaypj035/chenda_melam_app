@@ -1,33 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <!-- REQUIRED FOR VERCEL -->
+  <base href="$FLUTTER_BASE_HREF">
+  
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   
+  <!-- Firebase SDKs (modern versions) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
   
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <!-- Performance Optimizations -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   
   <title>Chenda Melam App</title>
+  
+  <!-- Favicon (add your own) -->
+  <link rel="icon" href="favicon.png">
 </head>
 <body>
   <script>
-    
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAdpDJDqocgxCgJf9lnWQXJpqiz-glksms",
       authDomain: "chenda-melam-event-scheduler.firebaseapp.com",
       projectId: "chenda-melam-event-scheduler",
       storageBucket: "chenda-melam-event-scheduler.appspot.com",
       messagingSenderId: "336372665366",
-      appId: "1:336372665366:android:26865213e013a987017937"
+      appId: "1:336372665366:web:26865213e013a987017937" // Changed from android to web
     };
 
-    
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
   </script>
+
+  <!-- Flutter Entry Point -->
   <script src="main.dart.js" type="application/javascript"></script>
+
+  <!-- Service Worker (for PWA) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('flutter_service_worker.js?v=2');
+      });
+    }
+  </script>
 </body>
 </html>

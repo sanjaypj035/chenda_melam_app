@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth_service.dart';
 
@@ -55,6 +55,11 @@ class _SignUpPageState extends State<SignUpPage> {
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
       );
+      
+      if (mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context, '/home', (route) => false);
+      }
     } on FirebaseAuthException catch (e) {
       setState(() => _errorMessage = e.message ?? "Sign up failed");
     } catch (e) {
@@ -69,14 +74,10 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign Up'),
-        elevation: 0,
-      ),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/chenda_background.jpg'),
+            image: AssetImage('assets/images/1000_F_505460427_4T2HjWM2IkMnpSwZaMEPXCKC4UVlsfW7.jpg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -101,16 +102,15 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.music_note, size: 50, color: Colors.deepOrange),
-                    const SizedBox(height: 10),
                     const Text(
                       'CREATE ACCOUNT',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.deepOrange,
+                        color: Colors.blue,
                       ),
                     ),
+                    const SizedBox(height: 4),
                     const SizedBox(height: 30),
 
                     if (_errorMessage != null)
@@ -126,9 +126,18 @@ class _SignUpPageState extends State<SignUpPage> {
                       controller: _firstNameController,
                       decoration: InputDecoration(
                         labelText: 'First Name',
-                        prefixIcon: const Icon(Icons.person),
+                        prefixIcon: const Icon(Icons.person, color: Colors.blue),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue, width: 2.0),
                         ),
                       ),
                       validator: (value) => value?.isEmpty ?? true ? 'Required' : null,
@@ -139,9 +148,18 @@ class _SignUpPageState extends State<SignUpPage> {
                       controller: _lastNameController,
                       decoration: InputDecoration(
                         labelText: 'Last Name',
-                        prefixIcon: const Icon(Icons.person_outline),
+                        prefixIcon: const Icon(Icons.person_outline, color: Colors.blue),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue, width: 2.0),
                         ),
                       ),
                       validator: (value) => value?.isEmpty ?? true ? 'Required' : null,
@@ -152,9 +170,18 @@ class _SignUpPageState extends State<SignUpPage> {
                       controller: _usernameController,
                       decoration: InputDecoration(
                         labelText: 'Username',
-                        prefixIcon: const Icon(Icons.alternate_email),
+                        prefixIcon: const Icon(Icons.alternate_email, color: Colors.blue),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue, width: 2.0),
                         ),
                       ),
                       validator: (value) => value?.isEmpty ?? true ? 'Required' : null,
@@ -166,9 +193,18 @@ class _SignUpPageState extends State<SignUpPage> {
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        prefixIcon: const Icon(Icons.email),
+                        prefixIcon: const Icon(Icons.email, color: Colors.blue),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue, width: 2.0),
                         ),
                       ),
                       validator: (value) {
@@ -184,16 +220,25 @@ class _SignUpPageState extends State<SignUpPage> {
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        prefixIcon: const Icon(Icons.lock),
+                        prefixIcon: const Icon(Icons.lock, color: Colors.blue),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue, width: 2.0),
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _obscurePassword 
                                 ? Icons.visibility_off 
                                 : Icons.visibility,
-                            color: Colors.grey,
+                            color: Colors.blue,
                           ),
                           onPressed: () {
                             setState(() {
@@ -215,16 +260,25 @@ class _SignUpPageState extends State<SignUpPage> {
                       obscureText: _obscureConfirmPassword,
                       decoration: InputDecoration(
                         labelText: 'Confirm Password',
-                        prefixIcon: const Icon(Icons.lock_outline),
+                        prefixIcon: const Icon(Icons.lock_outline, color: Colors.blue),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.blue, width: 2.0),
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _obscureConfirmPassword 
                                 ? Icons.visibility_off 
                                 : Icons.visibility,
-                            color: Colors.grey,
+                            color: Colors.blue,
                           ),
                           onPressed: () {
                             setState(() {
@@ -240,11 +294,12 @@ class _SignUpPageState extends State<SignUpPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepOrange,
+                          backgroundColor: Colors.blue,
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
+                          foregroundColor: Colors.white,
                         ),
                         onPressed: _isLoading ? null : _submit,
                         child: _isLoading
@@ -264,7 +319,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       onPressed: () => Navigator.pop(context),
                       child: const Text(
                         'Already have an account? Login',
-                        style: TextStyle(color: Colors.deepOrange),
+                        style: TextStyle(color: Colors.blue),
                       ),
                     ),
                   ],

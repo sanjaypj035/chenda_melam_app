@@ -13,17 +13,14 @@ class AuthWrapper extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        
         debugPrint('Auth state: ${snapshot.connectionState}, User: ${snapshot.data?.uid}');
 
-        
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
-        
         if (snapshot.hasData && snapshot.data != null) {
           return FutureBuilder<Map<String, dynamic>?>(
             future: Provider.of<AuthService>(context, listen: false)
@@ -34,12 +31,17 @@ class AuthWrapper extends StatelessWidget {
                   body: Center(child: CircularProgressIndicator()),
                 );
               }
+              
+              if (userSnapshot.hasError) {
+                // Show home page with cached data or empty state
+                return const HomePage();
+              }
+              
               return const HomePage();
             },
           );
         }
 
-        
         return const LoginPage();
       },
     );
