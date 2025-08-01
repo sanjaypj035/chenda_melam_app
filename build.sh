@@ -16,8 +16,8 @@ git config --global --add safe.directory /vercel/path0/flutter
 # Get project dependencies
 flutter pub get
 
-# Build the web application with a relative base-href
-flutter build web --release --web-renderer canvaskit --base-href ./
+# Build the web application with a standard base-href
+flutter build web --release --web-renderer canvaskit --base-href /
 
 # Tell Vercel where the output is located
 cp -r build/web/* .
