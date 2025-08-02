@@ -2,17 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "build.sh",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build/web"
-      }
+      "src": "pubspec.yaml",
+      "use": "@vercel/static-build"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "build/web/index.html"
     }
   ]
 }
