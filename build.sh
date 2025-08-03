@@ -17,4 +17,4 @@ git config --global --add safe.directory /vercel/path0/flutter
 flutter pub get
 
 # Build the web application with a relative base-href
-flutter build web --release --web-renderer canvaskit --base-href ./
+flutter build web --release --web-renderer canvaskit --base-href "/"
