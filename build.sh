@@ -17,7 +17,9 @@ git config --global --add safe.directory /vercel/path0/flutter
 flutter --version
 
 # Install dependencies
-flutter pub get
+./flutter/bin/flutter pub get
+
 
 # Build web with proper base-href
-flutter build web --release --web-renderer canvaskit --base-href "/"
+./flutter/bin/flutter build web --release --web-renderer canvaskit --base-href "/"
+
