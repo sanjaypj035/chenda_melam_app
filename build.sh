@@ -22,4 +22,6 @@ flutter --version
 
 # Build web with proper base-href
 ./flutter/bin/flutter build web --release --web-renderer canvaskit --base-href "/"
+mkdir -p public
+cp -r build/web/* public/
 
