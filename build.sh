@@ -1,17 +1,20 @@
 #!/bin/bash
 
-# Use Flutter SDK version 3.22.2 (which includes Dart 3.8.0)
-FLUTTER_VERSION="3.22.2"
+set -e  # Exit on any error
 
-# Download Flutter SDK
+# Download Flutter 3.22.2 (Dart 3.8)
+FLUTTER_VERSION="3.22.2"
 curl -O https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz
 tar xf flutter_linux_${FLUTTER_VERSION}-stable.tar.xz
 
-# Git safety config
+# Use local Flutter binary ONLY
+FLUTTER="./flutter/bin/flutter"
+
+# Allow build inside Vercel
 git config --global --add safe.directory /vercel/path0/flutter
 
-# Use ONLY local flutter for all commands
-./flutter/bin/flutter --version
-./flutter/bin/flutter config --no-analytics
-./flutter/bin/flutter pub get
-./flutter/bin/flutter build web --release --web-renderer canvaskit --base-href "/"
+# Run using local Flutter
+$FLUTTER --version
+$FLUTTER config --no-analytics
+$FLUTTER pub get
+$FLUTTER build web --release --web-renderer canvaskit --base-href "/"
