@@ -1,26 +1,29 @@
 #!/bin/bash
+set -e
 
-set -e  # Exit immediately on error
-
-# Download and extract Flutter 3.22.2
+# Define Flutter version
 FLUTTER_VERSION="3.22.2"
+
+# Download Flutter SDK
 curl -O https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz
 tar xf flutter_linux_${FLUTTER_VERSION}-stable.tar.xz
 
-# Use local Flutter path
-FLUTTER_PATH="$(pwd)/flutter/bin/flutter"
+# Define Flutter binary path
+FLUTTER="./flutter/bin/flutter"
 
-# Fix Git safe directory issue
-git config --global --add safe.directory /vercel/path0
+# Mark Flutter directory as safe before doing anything else
+git config --global --add safe.directory "$(pwd)/flutter"
 
-# Disable Flutter analytics
-$FLUTTER_PATH config --no-analytics
+# Disable analytics
+$FLUTTER config --no-analytics
 
-# Show Flutter version
-$FLUTTER_PATH --version
+# Print Flutter version
+$FLUTTER --version
 
-# Get dependencies
-$FLUTTER_PATH pub get
+# Install dependencies
+$FLUTTER pub get
 
-# Build web app
-$FLUTTER_PATH build web --release --web-renderer canvaskit --base-href "/"
+# Build the web app
+$FLUTTER build web --release --web-renderer canvaskit --base-href "/"
+
+# Optional: prepare Vercel output (not needed if using distDir in vercel.json)
