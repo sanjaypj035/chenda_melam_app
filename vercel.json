@@ -11,5 +11,6 @@
       "src": "/(.*)",
       "dest": "/build/web/index.html"
     }
-  ]
+  ],
+  "outputDirectory": "build/web"
 }
