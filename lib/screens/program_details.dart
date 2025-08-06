@@ -103,144 +103,141 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
               fit: BoxFit.scaleDown, // No zooming
             ),
           ),
-          Center( // Use Center to position content
-            child: ConstrainedBox( // Constrain the width for better readability
-              constraints: const BoxConstraints(maxWidth: 400),
-              child: RefreshIndicator(
-                onRefresh: () => _loadProgramData(),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Card(
-                        elevation: 2,
-                        color: Colors.white.withOpacity(0.8),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Program Details',
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black87),
-                              ),
-                              const Divider(),
-                              _buildDetailRow('Date', program['date'] ?? 'Not specified'),
-                              _buildDetailRow('Time', program['time'] ?? 'Not specified'),
-                              _buildDetailRow('Location', program['location'] ?? 'Not specified'),
-                            ],
-                          ),
+          Center( // Center the content
+            child: RefreshIndicator(
+              onRefresh: () => _loadProgramData(),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Card(
+                      elevation: 2,
+                      color: Colors.white.withOpacity(0.8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Program Details',
+                              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black87),
+                            ),
+                            const Divider(),
+                            _buildDetailRow('Date', program['date'] ?? 'Not specified'),
+                            _buildDetailRow('Time', program['time'] ?? 'Not specified'),
+                            _buildDetailRow('Location', program['location'] ?? 'Not specified'),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 24),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Team Members',
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black87),
-                          ),
-                          const Divider(),
-                          if (membersByInstrument.values.every((list) => list.isEmpty))
-                            const Center(child: Text('No team members added yet', style: TextStyle(color: Colors.black54)))
-                          else
-                            Card(
-                              elevation: 2,
-                              color: Colors.white.withOpacity(0.8),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Table(
-                                  border: TableBorder.all(color: Colors.grey.shade300),
-                                  columnWidths: const {
-                                    0: FlexColumnWidth(1.0),
-                                    1: FlexColumnWidth(2.0),
-                                  },
-                                  children: [
-                                    TableRow(
-                                      decoration: BoxDecoration(color: Colors.grey.shade200),
-                                      children: const [
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Text(
-                                            'Instrument',
-                                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
-                                          ),
+                    ),
+                    const SizedBox(height: 24),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Team Members',
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black87),
+                        ),
+                        const Divider(),
+                        if (membersByInstrument.values.every((list) => list.isEmpty))
+                          const Center(child: Text('No team members added yet', style: TextStyle(color: Colors.black54)))
+                        else
+                          Card(
+                            elevation: 2,
+                            color: Colors.white.withOpacity(0.8),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Table(
+                                border: TableBorder.all(color: Colors.grey.shade300),
+                                columnWidths: const {
+                                  0: FlexColumnWidth(1.0),
+                                  1: FlexColumnWidth(2.0),
+                                },
+                                children: [
+                                  TableRow(
+                                    decoration: BoxDecoration(color: Colors.grey.shade200),
+                                    children: const [
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'Instrument',
+                                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Text(
-                                            'Members',
-                                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
-                                          ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'Members',
+                                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
                                         ),
-                                      ],
-                                    ),
-                                    for (final instrument in sortedInstruments)
-                                      if (membersByInstrument[instrument]?.isNotEmpty ?? false)
-                                        TableRow(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                children: [
-                                                  Text(instrument, style: const TextStyle(color: Colors.black87)),
-                                                ],
-                                              ),
+                                      ),
+                                    ],
+                                  ),
+                                  for (final instrument in sortedInstruments)
+                                    if (membersByInstrument[instrument]?.isNotEmpty ?? false)
+                                      TableRow(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              children: [
+                                                Text(instrument, style: const TextStyle(color: Colors.black87)),
+                                              ],
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  for (final member in membersByInstrument[instrument]!)
-                                                    InkWell(
-                                                      onTap: () => _showPaymentStatusDialog(
-                                                        program['id'],
-                                                        member['name'],
-                                                        instrument,
-                                                        member['paymentStatus'] as String,
-                                                        member['id'] as String,
-                                                      ),
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.symmetric(vertical: 4),
-                                                        child: Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Text(
-                                                                member['name'],
-                                                                style: TextStyle(
-                                                                  color: _getInstrumentColor(instrument),
-                                                                  fontWeight: FontWeight.bold,
-                                                                ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                for (final member in membersByInstrument[instrument]!)
+                                                  InkWell(
+                                                    onTap: () => _showPaymentStatusDialog(
+                                                      program['id'],
+                                                      member['name'],
+                                                      instrument,
+                                                      member['paymentStatus'] as String,
+                                                      member['id'] as String,
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 4),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              member['name'],
+                                                              style: TextStyle(
+                                                                color: _getInstrumentColor(instrument),
+                                                                fontWeight: FontWeight.bold,
                                                               ),
                                                             ),
-                                                            _getPaymentStatusIcon(member['paymentStatus'] as String),
-                                                            const SizedBox(width: 8),
-                                                            IconButton(
-                                                              icon: const Icon(Icons.delete, color: Colors.red, size: 20),
-                                                              onPressed: () => _removeTeamMember(
-                                                                context,
-                                                                program['id'],
-                                                                member['name'],
-                                                                instrument,
-                                                              ),
+                                                          ),
+                                                          _getPaymentStatusIcon(member['paymentStatus'] as String),
+                                                          const SizedBox(width: 8),
+                                                          IconButton(
+                                                            icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+                                                            onPressed: () => _removeTeamMember(
+                                                              context,
+                                                              program['id'],
+                                                              member['name'],
+                                                              instrument,
                                                             ),
-                                                          ],
-                                                        ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
-                                                ],
-                                              ),
+                                                  ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                  ],
-                                ),
+                                          ),
+                                        ],
+                                      ),
+                                ],
                               ),
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     ),
                   ],
                 ),

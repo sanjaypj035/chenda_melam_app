@@ -196,23 +196,20 @@ class _SchedulePageState extends State<SchedulePage> {
               fit: BoxFit.scaleDown,
             ),
           ),
-          Center( // Use Center to position content
-            child: ConstrainedBox( // Constrain the width for better readability on large screens
-              constraints: const BoxConstraints(maxWidth: 400),
-              child: _isLoading
-                  ? const Center(child: CircularProgressIndicator(color: Colors.deepPurple))
-                  : SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          _buildInputFields(context),
-                          const SizedBox(height: 30),
-                          if (appData.scheduledPrograms.isNotEmpty) _buildScheduledProgramsList(context, appData),
-                        ],
-                      ),
+          Center(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator(color: Colors.deepPurple))
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80), // Use padding instead of ConstrainedBox
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _buildInputFields(context),
+                        const SizedBox(height: 30),
+                        if (appData.scheduledPrograms.isNotEmpty) _buildScheduledProgramsList(context, appData),
+                      ],
                     ),
-            ),
+                  ),
           ),
         ],
       ),
@@ -231,7 +228,7 @@ class _SchedulePageState extends State<SchedulePage> {
         _buildTimePicker(),
         const SizedBox(height: 30),
         SizedBox(
-          width: double.infinity, // Use full available width
+          width: double.infinity,
           child: ElevatedButton(
             onPressed: () => _addProgram(Provider.of<AppData>(context, listen: false)),
             style: ElevatedButton.styleFrom(
@@ -252,7 +249,7 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   Widget _buildTextField(TextEditingController controller, String label, String hint) {
-    return TextField( // No need for SizedBox here
+    return TextField(
       controller: controller,
       style: const TextStyle(color: Colors.black87),
       decoration: InputDecoration(
