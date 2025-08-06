@@ -196,23 +196,23 @@ class _SchedulePageState extends State<SchedulePage> {
               fit: BoxFit.scaleDown,
             ),
           ),
-          Positioned(
-            top: MediaQuery.of(context).size.height * 0.18,
-            bottom: MediaQuery.of(context).size.height * 0.18,
-            left: MediaQuery.of(context).size.width * 0.38,
-            right: MediaQuery.of(context).size.width * 0.38,
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator(color: Colors.deepPurple))
-                : SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _buildInputFields(context),
-                        const SizedBox(height: 30),
-                        if (appData.scheduledPrograms.isNotEmpty) _buildScheduledProgramsList(context, appData),
-                      ],
+          Center( // Use Center to position content
+            child: ConstrainedBox( // Constrain the width for better readability on large screens
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator(color: Colors.deepPurple))
+                  : SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _buildInputFields(context),
+                          const SizedBox(height: 30),
+                          if (appData.scheduledPrograms.isNotEmpty) _buildScheduledProgramsList(context, appData),
+                        ],
+                      ),
                     ),
-                  ),
+            ),
           ),
         ],
       ),
@@ -231,7 +231,7 @@ class _SchedulePageState extends State<SchedulePage> {
         _buildTimePicker(),
         const SizedBox(height: 30),
         SizedBox(
-          width: MediaQuery.of(context).size.width * 0.30,
+          width: double.infinity, // Use full available width
           child: ElevatedButton(
             onPressed: () => _addProgram(Provider.of<AppData>(context, listen: false)),
             style: ElevatedButton.styleFrom(
@@ -252,89 +252,80 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   Widget _buildTextField(TextEditingController controller, String label, String hint) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.30,
-      child: TextField(
-        controller: controller,
-        style: const TextStyle(color: Colors.black87),
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          labelStyle: const TextStyle(color: Colors.black54),
-          hintStyle: const TextStyle(color: Colors.black45),
-          filled: true,
-          fillColor: Colors.white.withOpacity(0.8),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Colors.blue),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Colors.blue, width: 2),
-          ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    return TextField( // No need for SizedBox here
+      controller: controller,
+      style: const TextStyle(color: Colors.black87),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        labelStyle: const TextStyle(color: Colors.black54),
+        hintStyle: const TextStyle(color: Colors.black45),
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.8),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.blue),
         ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
     );
   }
 
   Widget _buildDatePicker() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.30,
-      child: Row(
-        children: [
-          Expanded(
-            child: ElevatedButton(
-              onPressed: _pickDate,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[100],
-                foregroundColor: Colors.blue[700],
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              child: const Text('Select Date'),
+    return Row(
+      children: [
+        Expanded(
+          child: ElevatedButton(
+            onPressed: _pickDate,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue[100],
+              foregroundColor: Colors.blue[700],
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
+            child: const Text('Select Date'),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              _selectedDate == null ? 'No date selected' : 'Date: ${_selectedDate!.toLocal().toString().split(' ')[0]}',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14, color: Colors.black54),
-            ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            _selectedDate == null ? 'No date selected' : 'Date: ${_selectedDate!.toLocal().toString().split(' ')[0]}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 14, color: Colors.black54),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildTimePicker() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.30,
-      child: Row(
-        children: [
-          Expanded(
-            child: ElevatedButton(
-              onPressed: _pickTime,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[100],
-                foregroundColor: Colors.blue[700],
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              child: const Text('Select Time'),
+    return Row(
+      children: [
+        Expanded(
+          child: ElevatedButton(
+            onPressed: _pickTime,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue[100],
+              foregroundColor: Colors.blue[700],
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
+            child: const Text('Select Time'),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              _selectedTime == null ? 'No time selected' : 'Time: ${_selectedTime!.format(context)}',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14, color: Colors.black54),
-            ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            _selectedTime == null ? 'No time selected' : 'Time: ${_selectedTime!.format(context)}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 14, color: Colors.black54),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -348,82 +339,79 @@ class _SchedulePageState extends State<SchedulePage> {
           ),
         ),
         const SizedBox(height: 15),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.30,
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: appData.scheduledPrograms.length,
-            itemBuilder: (context, index) {
-              final program = appData.scheduledPrograms[index];
-              return Card(
-                margin: const EdgeInsets.only(bottom: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                elevation: 2,
-                color: Colors.white.withOpacity(0.8),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(program['name'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
-                                const SizedBox(height: 4),
-                                Text("Date: ${program['date']}", style: const TextStyle(color: Colors.black54)),
-                                Text("Time: ${program['time']}", style: const TextStyle(color: Colors.black54)),
-                                Text("Location: ${program['location']}", style: const TextStyle(color: Colors.black54)),
-                              ],
-                            ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: appData.scheduledPrograms.length,
+          itemBuilder: (context, index) {
+            final program = appData.scheduledPrograms[index];
+            return Card(
+              margin: const EdgeInsets.only(bottom: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              elevation: 2,
+              color: Colors.white.withOpacity(0.8),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(program['name'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
+                              const SizedBox(height: 4),
+                              Text("Date: ${program['date']}", style: const TextStyle(color: Colors.black54)),
+                              Text("Time: ${program['time']}", style: const TextStyle(color: Colors.black54)),
+                              Text("Location: ${program['location']}", style: const TextStyle(color: Colors.black54)),
+                            ],
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.person_add, color: Colors.blue),
-                            onPressed: () async {
-                              final memberResult = await _addTeamMemberToProgram(program['id']);
-                              if (memberResult != null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Team member "${memberResult['name']}" added'),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProgramDetailsPage(programIndex: index),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue[700],
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                          ),
-                          child: const Text('See Details'),
                         ),
+                        IconButton(
+                          icon: const Icon(Icons.person_add, color: Colors.blue),
+                          onPressed: () async {
+                            final memberResult = await _addTeamMemberToProgram(program['id']);
+                            if (memberResult != null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Team member "${memberResult['name']}" added'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProgramDetailsPage(programIndex: index),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue[700],
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                        ),
+                        child: const Text('See Details'),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ],
     );

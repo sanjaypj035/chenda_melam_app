@@ -103,21 +103,17 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
               fit: BoxFit.scaleDown, // No zooming
             ),
           ),
-          Positioned(
-            top: MediaQuery.of(context).size.height * 0.15,
-            bottom: MediaQuery.of(context).size.height * 0.15,
-            left: MediaQuery.of(context).size.width * 0.40, // FURTHER REDUCED from 0.30/0.35, to aggressively fit
-            right: MediaQuery.of(context).size.width * 0.40, // FURTHER REDUCED from 0.30/0.35, to aggressively fit
-            child: RefreshIndicator(
-              onRefresh: () => _loadProgramData(),
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.35, // FURTHER REDUCED from 0.40
-                      child: Card(
+          Center( // Use Center to position content
+            child: ConstrainedBox( // Constrain the width for better readability
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: RefreshIndicator(
+                onRefresh: () => _loadProgramData(),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Card(
                         elevation: 2,
                         color: Colors.white.withOpacity(0.8),
                         child: Padding(
@@ -137,11 +133,8 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.35, // FURTHER REDUCED from 0.40
-                      child: Column(
+                      const SizedBox(height: 24),
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -160,8 +153,8 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                 child: Table(
                                   border: TableBorder.all(color: Colors.grey.shade300),
                                   columnWidths: const {
-                                    0: FlexColumnWidth(1.0), // Kept to make Instrument column small
-                                    1: FlexColumnWidth(1.5), // FURTHER REDUCED from 2.0 to make Members column smaller
+                                    0: FlexColumnWidth(1.0),
+                                    1: FlexColumnWidth(2.0),
                                   },
                                   children: [
                                     TableRow(
@@ -191,8 +184,6 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                               padding: const EdgeInsets.all(8.0),
                                               child: Row(
                                                 children: [
-                                                  // Removed Icon widget here as requested
-                                                  // No specific icon, just text
                                                   Text(instrument, style: const TextStyle(color: Colors.black87)),
                                                 ],
                                               ),
@@ -307,12 +298,7 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
     }
   }
 
-  // FIX: Removed specific music icons, now it will either show generic person icon or no icon.
-  // Changed to show no icon for instrument type.
   Widget _getInstrumentIcon(String instrumentType) {
-    // If you want no icon at all, just return a SizedBox.shrink() or Container()
-    // For now, I'm removing the specific icon assignment and returning a SizedBox.shrink()
-    // so no icon will be visible.
     return const SizedBox(width: 0, height: 0);
   }
 

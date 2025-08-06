@@ -88,66 +88,59 @@ class _TeamMembersPageState extends State<TeamMembersPage> {
               fit: BoxFit.scaleDown, // Ensure no zooming
             ),
           ),
-          // Content positioned within the image frame, with very tight horizontal constraints
-          Positioned(
-            top: MediaQuery.of(context).size.height * 0.15, // Keep top/bottom reasonable
-            bottom: MediaQuery.of(context).size.height * 0.15,
-            left: MediaQuery.of(context).size.width * 0.38, // FURTHER REDUCED left
-            right: MediaQuery.of(context).size.width * 0.38, // FURTHER REDUCED right
-            child: Container(
-              // For debugging: uncomment to see the content bounds
-              // color: Colors.red.withOpacity(0.3),
-              child: ListView( // The main content ListView
-                padding: const EdgeInsets.all(0), // Remove default padding
-                children: membersData.entries.map((entry) {
-                  final instrumentType = entry.key;
-                  final members = entry.value;
+          Center( // Center the content
+            child: ConstrainedBox( // Constrain the width for readability
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: SingleChildScrollView( // The main content
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
+                child: Column(
+                  children: membersData.entries.map((entry) {
+                    final instrumentType = entry.key;
+                    final members = entry.value;
 
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0), // Adjust margin
-                    color: Colors.white.withOpacity(0.8), // Card background to match theme
-                    child: Padding(
-                      padding: const EdgeInsets.all(12), // Adjusted internal padding
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            instrumentType,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87, // Text color
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      color: Colors.white.withOpacity(0.8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              instrumentType,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          SizedBox( // Wrap Row in SizedBox to control width
-                            width: MediaQuery.of(context).size.width * 0.30, // Adjusted width for TextField/Button row
-                            child: Row(
+                            const SizedBox(height: 8),
+                            Row(
                               children: [
                                 Expanded(
                                   child: TextField(
                                     controller: _instrumentControllers[instrumentType],
-                                    style: const TextStyle(color: Colors.black87), // Text color
+                                    style: const TextStyle(color: Colors.black87),
                                     decoration: InputDecoration(
-                                      labelText: 'Add Member', // Simplified label text
-                                      labelStyle: const TextStyle(color: Colors.black54, fontSize: 12), // Reduced font size
+                                      labelText: 'Add Member',
+                                      labelStyle: const TextStyle(color: Colors.black54, fontSize: 12),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(8),
-                                        borderSide: const BorderSide(color: Colors.blue), // Blue border
+                                        borderSide: const BorderSide(color: Colors.blue),
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(8),
-                                        borderSide: const BorderSide(color: Colors.blue), // Blue border
+                                        borderSide: const BorderSide(color: Colors.blue),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(8),
-                                        borderSide: const BorderSide(color: Colors.blue, width: 2.0), // Blue border
+                                        borderSide: const BorderSide(color: Colors.blue, width: 2.0),
                                       ),
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), // Reduced padding
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 4), // Reduced spacing
+                                const SizedBox(width: 4),
                                 ElevatedButton(
                                   onPressed: () {
                                     final name = _instrumentControllers[instrumentType]!.text.trim();
@@ -166,43 +159,42 @@ class _TeamMembersPageState extends State<TeamMembersPage> {
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue, // Blue background
-                                    foregroundColor: Colors.white, // White text
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Reduced padding
+                                    backgroundColor: Colors.blue,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8), // Rounded corners
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-                                    minimumSize: Size(50, 30), // Minimum size for button
+                                    minimumSize: const Size(50, 30),
                                   ),
-                                  child: const Text('Add', style: TextStyle(fontSize: 12)), // Smaller text
+                                  child: const Text('Add', style: TextStyle(fontSize: 12)),
                                 ),
                               ],
                             ),
-                          ),
-                          const SizedBox(height: 12),
-                          // Member list in this section
-                          ...members.map((member) {
-                            return ListTile(
-                              contentPadding: EdgeInsets.zero, // Remove ListTile's default padding
-                              dense: true, // Make ListTile more compact
-                              leading: Icon(Icons.person, color: Colors.blue, size: 20), // Generic person icon
-                              title: Text(member['name'] ?? '', style: const TextStyle(color: Colors.black87)), // Text color
-                              trailing: widget.programId != null ? null : IconButton(
-                                icon: const Icon(Icons.add, color: Colors.blue, size: 20), // Icon color
-                                onPressed: () {
-                                  Navigator.pop(context, {
-                                    'name': member['name'] ?? '',
-                                    'instrumentType': instrumentType
-                                  });
-                                },
-                              ),
-                            );
-                          }).toList(),
-                        ],
+                            const SizedBox(height: 12),
+                            ...members.map((member) {
+                              return ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                dense: true,
+                                leading: const Icon(Icons.person, color: Colors.blue, size: 20),
+                                title: Text(member['name'] ?? '', style: const TextStyle(color: Colors.black87)),
+                                trailing: widget.programId != null ? null : IconButton(
+                                  icon: const Icon(Icons.add, color: Colors.blue, size: 20),
+                                  onPressed: () {
+                                    Navigator.pop(context, {
+                                      'name': member['name'] ?? '',
+                                      'instrumentType': instrumentType
+                                    });
+                                  },
+                                ),
+                              );
+                            }).toList(),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                }).toList(),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
           ),
