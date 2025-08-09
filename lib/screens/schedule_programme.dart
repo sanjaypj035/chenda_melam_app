@@ -197,19 +197,22 @@ class _SchedulePageState extends State<SchedulePage> {
             ),
           ),
           Center(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator(color: Colors.deepPurple))
-                : SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80), // Use padding instead of ConstrainedBox
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _buildInputFields(context),
-                        const SizedBox(height: 30),
-                        if (appData.scheduledPrograms.isNotEmpty) _buildScheduledProgramsList(context, appData),
-                      ],
+            child: ConstrainedBox( // Use ConstrainedBox to set a max width
+              constraints: const BoxConstraints(maxWidth: 600), // Max width of 600 pixels
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator(color: Colors.deepPurple))
+                  : SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _buildInputFields(context),
+                          const SizedBox(height: 30),
+                          if (appData.scheduledPrograms.isNotEmpty) _buildScheduledProgramsList(context, appData),
+                        ],
+                      ),
                     ),
-                  ),
+            ),
           ),
         ],
       ),
