@@ -61,7 +61,12 @@ class _SignUpPageState extends State<SignUpPage> {
           context, '/home', (route) => false);
       }
     } on FirebaseAuthException catch (e) {
-      setState(() => _errorMessage = e.message ?? "Sign up failed");
+      // Check for the specific error code for existing emails
+      if (e.code == 'email-already-in-use') {
+        setState(() => _errorMessage = "This email is already registered. Please login instead.");
+      } else {
+        setState(() => _errorMessage = e.message ?? "Sign up failed");
+      }
     } catch (e) {
       setState(() => _errorMessage = "An error occurred during sign up");
     } finally {
@@ -209,7 +214,9 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       validator: (value) {
                         if (value?.isEmpty ?? true) return 'Required';
-                        if (!value!.contains('@')) return 'Invalid email';
+                        // A more robust regex for email validation
+                        final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                        if (!emailRegex.hasMatch(value!)) return 'Invalid email format';
                         return null;
                       },
                     ),
